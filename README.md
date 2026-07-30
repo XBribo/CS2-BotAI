@@ -11,7 +11,7 @@ Improves their movement comprehensively, especially in dodging and peeking.<br>
 Enhances bots' awareness of their surroundings.<br>
 Improved bomb-related logic.<br>
 <br>
-V 1.8.7<br>
+V 1.8.8<br>
 Built and testing with<br>
 cs# 1.0.371<br>
 # Installation
