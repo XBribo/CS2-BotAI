@@ -55,8 +55,16 @@ public class BotAI : BasePlugin
         // the CC padding the cave patch itself overwrites, so it cannot be re-resolved
         // once written, and the displacement math below needs both pair addresses.
         var sites = new Dictionary<string, nint>();
+        var skippedPatches = new HashSet<string>();
         foreach (var (name, def) in patchDefinitions)
         {
+            if (!_isLinux && name == "AttackState_SkipSniperSpreadCheck")
+            {
+                Logger.LogWarning($"{name}: disabled; no verified AttackState target exists in the current Windows build.");
+                skippedPatches.Add(name);
+                continue;
+            }
+
             nint sigAddr = NativeAPI.FindSignature(GameUtils.GetModulePath("server"), def.signature);
             if (sigAddr == 0) { Logger.LogError($"'{name}': signature not found."); continue; }
             sites[name] = sigAddr + def.patchOffset;
@@ -88,6 +96,8 @@ public class BotAI : BasePlugin
 
         foreach (var name in patchDefinitions.Keys)
         {
+            if (skippedPatches.Contains(name)) continue;
+
             if (caveNames.Contains(name)) continue;
 
             string caveName = $"{name}_Cave";
